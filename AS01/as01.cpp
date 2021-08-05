@@ -9,6 +9,7 @@
 #define MIN 0  
 #define MAX 20
 
+//fat_size = fatorial size
 using fat_size=uint64_t;
 
 int isInInterval(int number);

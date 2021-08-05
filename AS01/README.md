@@ -7,3 +7,9 @@ O arquivo de entrada contém vários casos de teste. Cada caso contém dois núm
 # Saída
 
 Para cada caso de teste de entrada, seu programa deve imprimir uma única linha, contendo um número que é a soma de ambos os fatoriais (de M e N).
+
+Exemplo de Entrada | Exemplo de Saída
+------------ | -------------
+4 4 | 48
+0 0 | 2
+0 2 | 3

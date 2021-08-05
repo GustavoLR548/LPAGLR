@@ -3,7 +3,9 @@
 #include<iostream>
 #include<string>
 
-#define MIN 0
+//Definindo intervalo númerico que o 
+//usuário pode usar
+#define MIN 0  
 #define MAX 20
 
 int isInInterval(int number);

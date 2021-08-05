@@ -2,15 +2,18 @@
 //Autor: Gustavo Lopes Rodrigues
 #include<iostream>
 #include<string>
+#include<stdint.h>
 
 //Definindo intervalo númerico que o 
 //usuário pode usar
 #define MIN 0  
 #define MAX 20
 
+using fat_size=uint64_t;
+
 int isInInterval(int number);
 int stringToInt(std::string input, int firstIndex, int lastIndex );
-int fatorial(int n);
+fat_size fatorial(int n);
 
 int main() {
 
@@ -41,7 +44,7 @@ int isInInterval(int number) {
 }
 
 // Retornar o resultado do fatorial do número 'n'
-int fatorial(int n) {
+fat_size fatorial(int n) {
     if(n == 0)
         return 1;
     

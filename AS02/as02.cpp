@@ -1,3 +1,4 @@
+//AS02: Gustavo Lopes Rodrigues
 #include<iostream>
 #include<cstdint>
 
@@ -6,26 +7,32 @@ int numberOfLedsRequired(std::string input);
 int main() {
     
     uint16_t n;
-    std::string input;
+    std::string ledInput;
 
     std::cin >> n;
     
     for(uint16_t i = 0; i < n; i++) {
 
-        std::cin >> input;
+        std::cin >> ledInput;
 
-        std::cout << numberOfLedsRequired(input) << " leds" << std::endl;
+        std::cout << numberOfLedsRequired(ledInput) << " leds" << std::endl;
     }
-
 
     return 0;
 }
 
+//Calcular numero de leds necessario para 
+//fazer um painel de leds da string usada
+//como argumento
 int numberOfLedsRequired(std::string input) {
 
     int result = 0;
 
+    //iterar por cada caracter da string
     for(uint16_t i = 0; i < input.length(); i++) 
+    
+        //Somar o numero de leds necessario dependendo
+        //de qual caracter for lido
         switch(input.at(i)) {
             case '1':
                 result += 2;

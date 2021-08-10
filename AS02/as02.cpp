@@ -1,20 +1,35 @@
 //AS02: Gustavo Lopes Rodrigues
 #include<iostream>
 #include<cstdint>
+/* Complexidade do programa: considerando a funcao numberOfLedsRequired,
+*  podemos fazer o cálculo da complexidade da seguinte forma:
+*  declaracao de variavel = +1
+*  laco 'for' -> (input.length() as n) - 0 = + n
+*  	dentro do for
+*       switch case(pior caso = 9 -> numero de cases)= 
+*             O(9) ou O(1) = +1
+*             dentro do switch case
+*             operacao de soma + break = +2
+*  
+*  return = +1
+*
+*  Resultado = 1 + (n + 1 + 2) = n + 4 = O(n)
+*/
 
 int numberOfLedsRequired(std::string input);
 
 int main() {
-    
-    uint16_t n;
-    std::string ledInput;
+
+    uint16_t n;           // numero de casos testes
+    std::string ledInput; // input do painel led a ser calculada
 
     std::cin >> n;
     
     for(uint16_t i = 0; i < n; i++) {
 
+	//Ler painel de leds e imprimir numero de leds necessarios
+	//para fazer tal painel
         std::cin >> ledInput;
-
         std::cout << numberOfLedsRequired(ledInput) << " leds" << std::endl;
     }
 
@@ -26,7 +41,7 @@ int main() {
 //como argumento
 int numberOfLedsRequired(std::string input) {
 
-    int result = 0;
+    int leds = 0;
 
     //iterar por cada caracter da string
     for(uint16_t i = 0; i < input.length(); i++) 
@@ -35,40 +50,38 @@ int numberOfLedsRequired(std::string input) {
         //de qual caracter for lido
         switch(input.at(i)) {
             case '1':
-                result += 2;
+                leds += 2;
                 break;
             case '2':
-                result += 5;
+                leds += 5;
                 break;
             case '3':
-                result += 5;
+                leds += 5;
                 break;
             case '4':
-                result += 4;
+                leds += 4;
                 break;
             case '5':
-                result += 5;
+                leds += 5;
                 break; 
             case '6':
-                result += 6;
+                leds += 6;
                 break; 
             case '7':
-                result += 3;
+                leds += 3;
                 break; 
             case '8':
-                result += 7;
+                leds += 7;
                 break; 
             case '9':
-                result += 6;
+                leds += 6;
                 break;
             case '0':
-                result += 6;
+                leds += 6;
                 break;
             default:
-                break;
-                
+                break; 
         }
-    
 
-    return result;
+    return leds;
 }

@@ -1,8 +1,17 @@
-//AS01
-//Autor: Gustavo Lopes Rodrigues
+//AS01 : Gustavo Lopes Rodrigues
 #include<iostream>
 #include<string>
 #include<stdint.h>
+/* Complexidade: o programa pede o calculo de dois numeros fatoriais,
+*  que serao processados na funcao 'fatorial', esta funcao recursiva
+*  ira processar a funcao 'n' vezes + o numero de operacoes dentro da
+*  funcao, que no pior caso, sera +2 operacoes(um laco 'if' + 1 operacao
+*  de return.
+*
+*  A complexidade sera entao = 0((n+2)+(m+2)) = O(n+m) sendo n e m os 
+*  numeros fatorias a serem calculados.
+*/
+
 
 //Definindo intervalo númerico que o 
 //usuário pode usar

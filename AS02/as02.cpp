@@ -1,4 +1,4 @@
-//AS02: Gustavo Lopes Rodrigues
+//AS02: Gustavo Lopes Rodrigues 
 #include<iostream>
 #include<cstdint>
 /* Complexidade do programa: considerando a funcao numberOfLedsRequired,
@@ -6,8 +6,8 @@
 *  declaracao de variavel = +1
 *  laco 'for' -> (input.length() as n) - 0 = + n
 *  	dentro do for
-*       switch case(pior caso = 9 -> numero de cases)= 
-*             O(9) ou O(1) = +1
+*       switch case(pior caso = n -> numero de cases)= 
+*             O(n) ou O(1) = +1
 *             dentro do switch case
 *             operacao de soma + break = +2
 *  

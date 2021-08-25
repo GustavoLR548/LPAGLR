@@ -1,3 +1,4 @@
+//AS04: Gustavo Lopes
 #include <vector>
 #include <stdint.h>
 #include <array> 
@@ -5,29 +6,38 @@
 
 #define EMPTY -1
 
+//criando o tipo 'peso' e 'contador'
 using weight  = int;
 using counter = uint16_t;
 
+/* Complexidade: O(E * log(E) + E* log(V)) E -> Arestas(edges), V-> Vertices
+* Como o algoritmo usa um Kruskal para encontrar o custo dos
+* cabos, o custo da operação será o custo do Kruskal. Na minha implementacao
+* ele irá levar O(E* log(e)) para fazer o sort da estrutura
+* de arestas e seus pesos, e E*log(v) para criar o disjoint-set
+* contendo a minimum spanning tree
+*/
 
+//Struct do DisjoinSets
 typedef struct DisjoinSets {
 
     private: 
         
-        //Group of parent nodes and their ranks
+        //Vetor de nós e seus parentes
         std::vector<std::pair<int,int>> nodes;
 
     public: 
 
-        //Start the disjoinSets with a size of 'n'
+        //Iniciar o DisjointSets
         DisjoinSets(int n) {
             
-            //start all nodes
+            
             for(int i = 0; i < n ; i++) 
                 this->nodes.push_back({0,i});
         
         }
 
-        //Find the parent of 'index'
+        //Achar o pai do no index
         int find(int index) {
 
             if(index != this->nodes.at(index).second)
@@ -37,7 +47,7 @@ typedef struct DisjoinSets {
             return this->nodes.at(index).second;
         }
 
-        //Merge set x with y
+        //Fazer uma combinacao do no 'x' com o no 'y'
         void merge(int x,int y) {
 
             x = find(x);
@@ -55,26 +65,23 @@ typedef struct DisjoinSets {
 
 }DisjoinSets;
 
-
+// Classe de grafos
 class Graph {
 
     private: 
 
-        //Attributes
+        // Num de vertices e arestas
         counter vertices;
         counter edges;
 
+        // Armazenar arestas e seus respectivos pesos
         std::vector<std::pair<weight,std::pair<counter,counter>>> edges_weights;
 
     public:
-        
-        //Constructors
 
-        //Start the Graph with 'vertices' number of vertices
-        // Start the graph matrix with a set size
+        // Iniciar grafo com 'v' numero de vertices
         Graph(counter v) {
 
-            //Starting the matrix with EMPTY value##
             weight default_value = EMPTY;
             
             this->edges    = 0;
@@ -84,38 +91,35 @@ class Graph {
                 add_vertex();
         }
 
-        //Return the number of vertices the graph has
         counter vertices_num() {
             return this->vertices;
         }
 
-        //Return the number of edges the graph has
         counter edges_num() {
             return this->edges;
         }
 
-        //Basic graph operations
-        
-        /** Add a new Edge, by giving the coordenates of the first and last vertex
-         *  (Obs: There is also the option of adding a weight to the 
-         *  Edge, but if not specified, the 'weight' will be 0 )
+        /** Adicionar aresta ao grafo
          */ 
-        bool add_edge(counter first, counter last, weight value) {
+        bool add_edge(counter first, counter last, weight value = 0) {
             bool result = false;
 
+            //Se algum dos vertices nao existir no grafo
             if(first < this->vertices_num() && last < this->vertices_num()) {
                 this->edges++;
 
+                // Fazer par de vertices e peso e adicionar ao grafo
                 auto edges_pair        = std::make_pair(first,last);
                 auto weight_edges_pair = std::make_pair(value,edges_pair);
-
                 this->edges_weights.push_back(weight_edges_pair);
+
                 result = true;
             }
 
             return result;
         }
 
+        // Adicionar nova vertice
         counter add_vertex() {
             counter result = -1;
             counter pos    = this->vertices;
@@ -128,30 +132,32 @@ class Graph {
             return result;
         }
 
-        // Kruskal's Algorythm, with a method to count cycles
+        // Algoritmo de kruskal, modificado para 
+        // calcular o peso da MST
         counter kruskal() {
 
-            //sort the edges by their weights
+            // Fazer ordenação das arestas 
             std::sort(edges_weights.begin(), edges_weights.end());
 
             counter total_weight = 0;
 
-            //Start the disjointSets with the number of vertices
+            // Comecar o DisjointSet com o número de vertices 
+            // de grafos
             DisjoinSets ds(this->vertices);
         
             for (auto it=edges_weights.begin(); it!=edges_weights.end(); it++) {
 
-                //in the current iteration of the array
-                //store the first, and last vertex
+                // Armazenar os vertices da aresta atual
                 int source      = it->second.first;
                 int destination = it->second.second;
         
-                //get the parent of said vertexes
+                // Resgatar o pai das vertices
                 int parent_source      = ds.find(source);
                 int parent_destination = ds.find(destination);
 
-                //If the parents aren't the same, merge
-                //these two in the array
+                // Se os pais das vertices nao sao os mesmos, significa
+                // que junta-los nao formara um ciclo, logo, podemos
+                // fazer o merge
                 if (parent_source != parent_destination) {
                     ds.merge(parent_source, parent_destination);
                     total_weight += it->first;
@@ -169,21 +175,28 @@ int main() {
     uint16_t num_roteadores;
     uint16_t quant_cabos; 
 
+    // Ler o numero de roteadores(num de vertices)
+    // e ler o numero de cabos(numero de arestas)
     std::cin >> num_roteadores >> quant_cabos;
 
+    // Criar grafo
     Graph* g = new Graph(num_roteadores);
 
+    // Fazer a leitura das arestas
     for(int i = 0; i < quant_cabos; i++) {
         
         uint16_t comeco;
         uint16_t fim;
         uint16_t peso;
 
+        // Ler vertice inicial, final e o peso da aresta
         std::cin >> comeco >> fim >> peso;
 
+        // Adicionar aresta, diminuindo em 1 a vertice, 
+        // para considerar que o indice do vetor comeco eh igual a 0
         g->add_edge(--comeco,--fim,peso);
     }
-
+    
     std::cout << g->kruskal() << std::endl;
 
     return 0;

@@ -1,4 +1,4 @@
-//AS04: Gustavo Lopes
+//AS05: Gustavo Lopes
 #include<vector>
 #include<stdint.h>
 #include<array> 
@@ -10,9 +10,9 @@
 //criando o tipo 'contador'
 using counter = uint16_t;
 
-/* Complexidade: O(V^2), pois o algoritmo precisa atravessar todas as
-*  vertices(V) e no pior caso, durante o DFS, ele vai precisar atravessar
-*  o grafo inteiro, logo, tornando o algoritmo mais custoso
+/* Complexidade: O(V^2), pois é o custo para o algoritmo DFS, mais
+* o custo para fazer a insercao dos pares de vertices dentro do dfs. Todo esse processo
+* dentro do DFS irá deixá-lo mais custoso do que o normal.
 */
 
 // Classe de grafos
@@ -96,7 +96,7 @@ class Graph {
                 if (visited[v] == false) {
 
                     // Fazer um 'depth first search', retornando vertices atravessados
-                    auto vertexes = dfs(v, visited);
+                    auto vertexes = traverse_component(v, visited);
 
                     // Ordenar vertices e imprimir na tela
                     std::sort(vertexes.begin(), vertexes.end());
@@ -115,18 +115,19 @@ class Graph {
             return num;
         }
 
-        // Funcao de 'depth first search'
-        std::vector<char> dfs(int v, bool* visited) {
+        // Funcao de 'depth first search', adaptada para retornar as vertices
+        // visitadas
+        std::vector<char> traverse_component(int curr_v, bool* visited) {
 
             // Marcar vertice como visitado
-            visited[v] = true;
+            visited[curr_v] = true;
 
             // Criar array de char, iniciando com a vertice
             // que esta sendo visitada
-            std::vector<char> resp = { intToChar(v) };
+            std::vector<char> resp = { intToChar(curr_v) };
 
             // Pegar vizinhos de 'v'
-            auto curr_vertex_adj = this->adj.at(v); 
+            auto curr_vertex_adj = this->adj.at(curr_v); 
 
             // Atravesar os vizinhos de 'v'
             for (int i = 0 ; i < curr_vertex_adj.size(); i++)
@@ -136,7 +137,7 @@ class Graph {
                 if (!visited[curr_vertex_adj.at(i)]) {
 
                     // Pegar vizinhos visitados e armazena-los no resultaod
-                    auto tmp = dfs(curr_vertex_adj.at(i), visited);
+                    auto tmp = traverse_component(curr_vertex_adj.at(i), visited);
                     for(int j = 0; j < tmp.size(); j++) {
                         char aux = tmp.at(j);
                         resp.push_back(aux);
@@ -185,7 +186,9 @@ int main() {
 
         // Imprimindo o caso atual
         std::cout << "Case #" << i + 1 << ":" << std::endl;
+
         int num = g->num_components();
+
         std::cout << num << " connected components\n" << std::endl;
 
         // Deletar grafo da memoria

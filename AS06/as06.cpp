@@ -5,11 +5,14 @@
 #include<bits/stdc++.h>
 #include<iostream>
 
-#define EMPTY -1
+#define INF INT_MAX
 
 //criando o tipo 'peso' e 'contador'
 using weight  = int;
 using counter = uint16_t;
+
+typedef std::vector<std::vector<weight>> matrix;
+typedef std::vector<matrix> space3d;
 
 /* Complexidade: O(v^2) -> pois o codigo irá fazer o algoritmo DFS
 e depois uma versão modificada do DFS, que irá ordenar os vertices a serem visitados a
@@ -22,221 +25,96 @@ class Graph {
 
     private: 
 
-        // Num de vertices e arestas
+        // Num de vertices
         counter vertices;
-        counter edges;
 
-        // Lista de adjacencia , com os pesos de cada relação
-        std::vector<std::vector<std::pair<counter,weight>>> adj;
+        // matrix de adjacencia
+        matrix adj;
 
     public:
 
         // Iniciar grafo com 'v' numero de vertices
         Graph(counter v) {
+            this->vertices = v;
 
-            weight default_value = EMPTY;
-            
-            this->edges    = 0;
-            this->vertices = 0;
-
-            for(int i =0 ; i < v; i++) 
-                add_vertex();
+            // Criar a matrix de adjacencia
+            matrix tmp(v,std::vector<weight>(v,INF));
+            adj = tmp;
         }
-
-        counter vertices_num() {
-            return this->vertices;
-        }
-
-        counter edges_num() {
-            return this->edges;
-        }
-
+        
         /** Adicionar aresta ao grafo
          */ 
-        bool add_edge(counter first, counter last, weight value = 0) {
-            bool result = false;
+        void add_edge(counter first, counter last, weight value) {
 
-            //Se algum dos vertices nao existir no grafo
-            if(first < this->vertices_num() && last < this->vertices_num()) {
-                this->edges++;
-
-                // Fazer par de vertices e peso e adicionar ao grafo
-                auto v1 = std::make_pair(first,value);
-                auto v2 = std::make_pair(last,value);
-
-                // Adicionar vertices a lista de adjacencia
-                add_adj(first, v2);
-                add_adj(last, v1);
-
-                result = true;
-            }
-
-            return result;
-        }
-
-        // Adicionar vertice na lista de adjacencia
-        void add_adj(counter vertex, std::pair<counter,weight> value) {
-            auto it = &this->adj.at(vertex); // Resgatar ponteiro para a lista na posicao 'first'
-
-            // Inserir 'last' para a lista resgatada, como a variavel eh um 
-             // ponteiro, o elemento sera atualizado na memoria
-            it->push_back(value);            
-        }
-
-        // Adicionar nova vertice
-        void add_vertex() {
-            this->vertices++;
-
-            std::vector<std::pair<counter,weight>> it;
-
-            this->adj.push_back(it);
-        }
-
-        int num_components() {
-
-            int num = 0; // variavel de resultado
-
-            // Variavel para marcar vertices visitadas
-            bool* visited = new bool[this->vertices];
-            memset(visited, false,this->vertices*sizeof(bool)); // iniciando array com valor 'false'
-        
-            //Visitar todas as vertices
-            for (int v = 0; v < this->vertices; v++) {
-                if (visited[v] == false) {
-
-                    // Fazer um 'depth first search', retornando vertices atravessados
-                    dfs(v, visited);
-
-                    // aumentar numero de componentes
-                    num++;
-                }
-            }
-
-            // deletar array da memoria
-            delete[] visited;
-
-            return num;
-        }
-
-        // Funcao de 'depth first search'
-        void dfs(int v, bool* visited) {
-
-            // Marcar vertice como visitado
-            visited[v] = true;
-
-            // Pegar vizinhos de 'v'
-            auto curr_vertex_adj = this->adj.at(v); 
-
-            // Atravesar os vizinhos de 'v'
-            for (int i = 0 ; i < curr_vertex_adj.size(); i++) {
-
-                // Se o vizinho de 'v' nao tiver sido visitado
-                // visita-lo
-                if (!visited[curr_vertex_adj.at(i).first]) {
-                    dfs(curr_vertex_adj.at(i).first, visited);
-                }
-            }
+            adj[first][last] = value;
+            adj[last][first] = value;              
         }
 
         weight time_necessary(int num_teleports) {
+            matrix floydWarshall = findAllPairShortestPath();
 
-            int num_components = this->num_components();
-            
-            //Os teletransportes servem para contabilizar o usuário atravessar pelos componentes conexos,
-            //se o numero de teletransportes for menor que o numero de componentes, pois não será possível
-            //ir para todos os componentes
-            if(++num_teleports < num_components) {
-                return -1;
-            }
-            
-            int total_weight = 0;
+            space3d tmp(this->vertices, matrix((1 << this->vertices) + 1, std::vector<weight>(this->vertices,-1)));
 
-            // Variavel para marcar vertices visitadas
-            bool* visited = new bool[this->vertices];
-            memset(visited, false,this->vertices*sizeof(bool)); // iniciando array com valor 'false'
+            print(floydWarshall);
+            return (weight)-1;
+            //return find_minimum_weight_path(tmp, 0, 1, num_teleports , num_teleports);
+        }
+
+        matrix findAllPairShortestPath() {
+            matrix dist = this->adj;
         
-            //Visitar todas as vertices
-            for (int v = 0; v < this->vertices; v++) {
-                if (visited[v] == false) {
-
-                    // Fazer um 'depth first search', retornando vertices atravessados
-                    total_weight += dfs_weights(v, visited,-1);
-                }
-            }
-
-            // deletar array da memoria
-            delete[] visited;
-
-            return total_weight;
+            for (int k = 0; k < this->vertices; k++) 
+                for (int i = 0; i < this->vertices; i++) 
+                    for (int j = 0; j < this->vertices; j++) 
+                        dist[i][j] = std::min(dist[i][j],dist[i][k] + dist[k][j]);
+        
+            return dist;
         }
 
-        // Funcao de 'depth first search'
-        int dfs_weights(int v, bool* visited, int previous_weight) {
+        int find_minimum_weight_path(space3d pd, int u, int mask, int num_teleports, int total_teleports){
 
-            // Marcar vertice como visitado
-            visited[v] = true;
+            if( mask == ( 1 << this->vertices ) -1 ) 
+                return 0;
 
-            int value = 0;
-            int previous_value =  previous_weight;
+            int &p = pd[u][mask][num_teleports]; 
+            //std::cout << "p: " << p << std::endl;
 
-            // Pegar vizinhos de 'v'
-            auto curr_vertex_adj = this->adj.at(v); 
+            if(p != -1) 
+                return p;
 
-            // Fazer ordenação do vetor, caso ele tenha mais que 1 elemento
-            if(curr_vertex_adj.size() > 1)
-                sort(&curr_vertex_adj);
-
-            // Atravesar os vizinhos de 'v'
-            for (int i = 0 ; i < curr_vertex_adj.size(); i++) {
-                
-                // Se o vizinho de 'v' nao tiver sido visitado
-                // visita-lo
-                if (!visited[curr_vertex_adj.at(i).first]) {
-                    value += curr_vertex_adj.at(i).second;
-                    previous_value = curr_vertex_adj.at(i).second; //armazenar o valor do peso, caso o vertice precisa voltar
-                    value += dfs_weights(curr_vertex_adj.at(i).first, visited, previous_value);
-                }
-            }
-
-            if(!all_have_been_visited(visited)) {
-                value += previous_value;
-            }
-
-            return value;
-        }
-
-        // Verificar se todas as posicoes do array de booleano
-        // é igual a true
-        bool all_have_been_visited(bool* visited) {
-            bool response = true;
-            for(int i =0 ; i < this->vertices; i++) {
-                if(visited[i] == false) {
-                    response = false;
-                }
-            }
-
-            return response;
-        }
-
-        //Fazer sort dos vertices
-        void sort(std::vector<std::pair<counter,weight>>* adjs) {
-            int i, j, min_idx;
+            std::cout << "k = " << num_teleports << " K = " << total_teleports << std::endl;
+            for(int i = num_teleports+1 ; i < total_teleports; i++ )
+                if(pd[u][mask][i] < p) 
+                    return INF;
             
-            // One by one move boundary of unsorted subarray
-            for (i = 0; i < adjs->size() - 1; i++) {
-                // Find the minimum element in unsorted array
-                min_idx = i;
-                for (j = i+1; j < adjs->size(); j++)
-                if (adjs->at(j).second < adjs->at(min_idx).second)
-                    min_idx = j;
+            int ret = INF;
+            
+            for (int i = 0 ; i < this->vertices; i++) {
+                std::cout << "entrei no for" << std::endl;
+                std::cout << "\t u = " << u << " i " << i << std::endl;
+                std::cout << "\t\t mat[u][i] = " << this->adj[u][i] << std::endl;
+                if( mask & (1<<i) )   
+                    continue;
 
+                if( num_teleports =! 0 ) 
+                    ret= std::min(ret, find_minimum_weight_path(pd,i, mask | (1<<i), num_teleports-1,total_teleports));
 
-                std::pair<counter,weight> tmp = adjs->at(i);
-                adjs->at(i) = adjs->at(min_idx);
-                adjs->at(min_idx) = tmp;
-                
+                if( this->adj[u][i] < INF) {
+                    ret= std::min(ret, find_minimum_weight_path(pd,i, mask | (1<<i), num_teleports,total_teleports) + this->adj[u][i]);	
+                }
             }
-        } 
+            std::cout << "--------------------" <<  std::endl;
+            return ret;	
+        }	
+
+        void print(matrix m) {
+            for(int i = 0; i < this->vertices; i++) {
+                for(int j = 0; j < this->vertices; j++) {
+                    std::cout << m[i][j] << " ";
+                }
+                std::cout << std::endl;
+            }
+        }
 };      
 
 int main() {

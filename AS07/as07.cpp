@@ -4,6 +4,14 @@
 #include<vector>
 #include <cmath>
 
+/*
+* Complexidade : O(N^2) sendo n o número de pontos inseridos   
+  no programa. A complexidade se deve ao fato que para encontrar 
+  a menor distância entre os pontos, ele irá fazer terá dois laçoes de
+  repetição, onde cada ponto será comparado com todos os outros pontos,
+  encontrando o resultado por força bruta.
+*/
+
 // Estrutura para armazenar coordenadas de um ponto
 typedef struct Point{
     int x;

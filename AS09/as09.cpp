@@ -1,30 +1,12 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include <map>
-#include <queue>
 
+const int dx[8] = {1, 1, 1, 0, -1, -1, -1, 0};
+const int dy[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
 
 typedef std::vector<std::vector<int>> matrix;
-
-// Estrutura para guardar as arestas
-typedef struct Apple{
-
-    //Arestas de ponto de partida e destino
-	int x, y;
-    int time; // Peso
-
-    //Criar aresta
-	Apple( int x, int y, int time ) {
-        this->x = x;
-        this->y = y;
-        this->time = time;
-    }
-
-    //Comparador de arestas para a priority queue
-    bool operator < ( const Apple& a ) const {
-		return time > a.time;
-	}
-}Apple;
 
 // Classe de grafos
 class Tree {
@@ -35,13 +17,12 @@ class Tree {
         int num_l;
         int num_c;
 
-        // Armazenar arestas e seus respectivos pesos
-        std::priority_queue<Apple> apples;
-
         // Todas as vertices e os seus index
         matrix tree_area;
 
         int max_time;
+
+        std::map<std::string,int> memo;
 
     public:
 
@@ -59,62 +40,48 @@ class Tree {
         void add_apple(int first, int last, int value) {
 
             this->tree_area[first][last] = value;
-            this->apples.push(Apple(first, last, value));
-            max_time = std::max(max_time, value);
+            max_time = std::max(max_time, value + 1);
         }
 
-        void print() {
-            for(int i = 0; i < this->num_l; i++) {
-                for(int j = 0; j < this->num_c; j++) {
-                    std::cout << this->tree_area[i][j] << " ";
-                }
-                std::cout << std::endl;
-            }
-            std::cout << std::endl;
+        int get_num_apples(int x, int y) {
+            
+            return calculate(x,y,0);
         }
 
-        int calculate(int x, int y, int time = 0) {
+        int calculate(int x, int y, int time) {
             
-            int sum = 0;
-            
-            std::cout << "max_time: " << max_time << std::endl;
+            if(time == max_time) 
+                return 0;
 
-            while(time <= this->max_time - 1) {
-                Apple a = apples.top();
+            std::string key = generate_memo_key(x,y,time);
 
-                if(a.x == x && a.y == y) {
-                    std::cout << "pop!" << std::endl;
-                    apples.pop();
-                    a = apples.top();
-                    sum++;
-                } 
+            if(memo.count(key))
+                return memo.at(key);
 
-                int dx = a.x - x;
-                int dy = a.y - y;    
+            int num_apples = (this->tree_area[x][y] == time ? 1 : 0);
+            int future_apples = calculate(x,y,time+1);
 
-                if(dx != 0) 
-                    x += dx/std::abs(dx);           
-                if (dy != 0) 
-                    y += dy/std::abs(dy);
+            for(int i = 0; i < 8; i++) {
+
+                int next_x,next_y;
+
+                next_x = x+dx[i];
+                next_y = y+dy[i];
                 
-
-                std::cout << "x: " << x << "y: " << y << "\n" << std::endl;
-                std::cout << "a.x: " << a.x << "a.y: " << a.y << "\n" << std::endl;
-                std::cout << "time: " << time << "\n" << std::endl;
-
-                if(a.x == x && a.y == y) {
-                    std::cout << "pop!" << std::endl;
-                    apples.pop();
-                    a = apples.top();
-                    sum++;
-                } 
-
-                time++;
+                if(is_inside_matrix(next_x,next_y))
+                    future_apples = std::max(future_apples, calculate(next_x,next_y,time+1));
             }
 
-            return sum;
+            return num_apples + future_apples;
         }
 
+        bool is_inside_matrix(int x,int y) {
+            return !( x < 0 || x >= num_l || y < 0 || y >= num_c );
+        }
+
+        std::string generate_memo_key(int x,int y, int time) {
+            return std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(time);
+        }
         
 };      
 
@@ -140,7 +107,7 @@ int main() {
 
         std::cin >> x >> y;
 
-        int cost = t.calculate(--x,--y);
+        int cost = t.get_num_apples(--x,--y);
 
         std::cout << cost << std::endl;
 

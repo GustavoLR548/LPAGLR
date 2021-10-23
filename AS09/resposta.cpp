@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <iostream>
 
 #define EMPTY 0x3f3f3f3f
 
@@ -32,12 +33,15 @@ bool lim(ii a)
 
 int foo(ii u, int t) 
 {
+	//std::cout << "x: " << u.fi << " y: " << u.se << " time: " << t << std::endl;
+
 	if(t == lt)
 		return 0;
 	if(dp[u.fi][u.se][t] != EMPTY)
 		return dp[u.fi][u.se][t];
 	
 	int plus = app.count(make_pair(u, t));
+
 	int _max = foo(u, t+1);
 	ii v;
 
@@ -50,6 +54,8 @@ int foo(ii u, int t)
 			_max = max(_max, foo(v, t+1));
 	}
 	
+	std::cout << "num apples + future apples: " << _max+plus << std::endl;
+
 	return dp[u.fi][u.se][t] = _max+plus;
 }
 

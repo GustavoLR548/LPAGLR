@@ -2,11 +2,12 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 
 const int dx[8] = {1, 1, 1, 0, -1, -1, -1, 0};
 const int dy[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
 
-typedef std::vector<std::vector<int>> matrix;
+typedef std::pair<std::pair<int, int>, int> apples_and_fall_time;
 
 // Classe de grafos
 class Tree {
@@ -18,7 +19,7 @@ class Tree {
         int num_c;
 
         // Todas as vertices e os seus index
-        matrix tree_area;
+        std::set<apples_and_fall_time> apples;
 
         int max_time;
 
@@ -30,16 +31,13 @@ class Tree {
             this->num_l = l;
             this->num_c = c;
             this->max_time = 0;
-
-            matrix tmp(l,std::vector<int>(c,-1));
-            this->tree_area = tmp;
         }
     
         /** Adicionar aresta ao grafo
          */ 
         void add_apple(int first, int last, int value) {
 
-            this->tree_area[first][last] = value;
+            apples.insert(std::make_pair(std::make_pair(first, last), value));
             max_time = std::max(max_time, value + 1);
         }
 
@@ -52,13 +50,14 @@ class Tree {
             
             if(time == max_time) 
                 return 0;
-
+            
             std::string key = generate_memo_key(x,y,time);
 
-            if(memo.count(key))
+            if(memo.find(key) != memo.end()) {
                 return memo.at(key);
-
-            int num_apples = (this->tree_area[x][y] == time ? 1 : 0);
+            }
+            
+            int num_apples = apples.count(std::make_pair(std::make_pair(x,y), time));
             int future_apples = calculate(x,y,time+1);
 
             for(int i = 0; i < 8; i++) {
@@ -68,9 +67,11 @@ class Tree {
                 next_x = x+dx[i];
                 next_y = y+dy[i];
                 
-                if(is_inside_matrix(next_x,next_y))
+                if(is_inside_matrix(next_x,next_y)) 
                     future_apples = std::max(future_apples, calculate(next_x,next_y,time+1));
             }
+
+            memo.insert({key, num_apples + future_apples});
 
             return num_apples + future_apples;
         }

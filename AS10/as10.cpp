@@ -1,4 +1,10 @@
+//AS10: Gustavo Lopes
 #include<iostream> 
+
+/*
+Complexidade: O(1) , pois os calculos do numero de notas ou moedas nao exige
+qualquer iteracao por loop, apenas uma unica chamada a funcao 'numNotasOuMoedas'.
+*/
 
 // Calcular quantas notas(ou moedas) existem, dado 
 // uma quantia total e um certo valor
@@ -6,11 +12,11 @@ int numNotasOuMoedas(double* total,double valor);
 
 int main() {
 
-    //Leitura do dinheiro
+    // Leitura do dinheiro
     double dinheiro;
     std::cin >> dinheiro;
 
-    //Imprimindo quantidade de notas
+    // Imprimindo quantidade de notas
     std::cout << "NOTAS:" << std::endl;
     std::cout << numNotasOuMoedas(&dinheiro,100) << " nota(s) de R$ 100.00" << std::endl; 
     std::cout << numNotasOuMoedas(&dinheiro,50) << " nota(s) de R$ 50.00" << std::endl; 

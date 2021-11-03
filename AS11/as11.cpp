@@ -26,6 +26,8 @@ class Chessboard {
 
     public: 
 
+        int solution;
+
         Chessboard(int width, int height) {
             this->width  = width;
             this->height = height;
@@ -40,8 +42,8 @@ class Chessboard {
                     
                     std::cin >> this->board[i][j];
                     if(this->board[i][j] == HORSE) {
-                        horse.first  = j;
-                        horse.second = i;
+                        horse.first  = i;
+                        horse.second = j;
                     }
                     else if(this->board[i][j] == PAWN) 
                         pawns.insert(std::make_pair(i,j));
@@ -50,68 +52,58 @@ class Chessboard {
             }
         }
 
-        int find_min_movements_for_pawns() {
+        void find_min_movements_for_pawns() {
             
-            int min_movements = INT32_MAX;
-            int num_movements = 0;
-            int pawns_captured = 0;
-            
-            for(int i = 0; i < 8; i++) {
+            coordinates first = this->horse;
+            solution = this->width*this->height;
+            solve(first);
+        }
 
-                coordinates curr = this->horse;
-                curr.first  += dx[i];
-                curr.second += dy[i];
+        void solve(coordinates c,int pawns_captured = 0, int moves = 0) {
 
-                if (!is_valid_movement(curr)) {
-                     continue;
+            if (moves >= (this->width*this->height)/2) 
+                return;
+
+            if(pawns.count(c)) {
+                pawns_captured++;
+                if(pawns_captured == this->pawns.size()) {
+                    solution = std::min(solution,moves);
+                    return;
                 }
-                
-                num_movements++;
-
-                std::vector<coordinates> previous_movements;
-                previous_movements.push_back(curr);
-                while(pawns_captured != pawns.size() && !previous_movements.empty()) {
-
-                    coordinates tmp = curr;
-                    bool valid_movement_found = false;
-
-                    if(pawns.count(tmp)) 
-                        pawns_captured++;
-                    
-                    if(pawns_captured == pawns.size())
-                        continue;
-
-                    num_movements++;
-
-                    for(int j = 0; j < 8; j++) {
-
-                        tmp.first  += dx[i];
-                        tmp.second += dy[i];
-                    
-                        if (!is_valid_movement(tmp)) {
-                            continue;
-                        } else {
-                            previous_movements.push_back(tmp);
-                            valid_movement_found = true;
-                            break;
-                        }
-                    }
-
-                    if(valid_movement_found) {
-                        curr = tmp;
-                    } else {
-                        curr = previous_movements[previous_movements.size()-1];
-                        previous_movements.pop_back();
-                    } 
-
-                }
-
-                min_movements = std::min(min_movements*2,num_movements);
-                num_movements = 0;
-                pawns_captured = 0;
             }
 
-            return std::abs(min_movements/4);
+            std::vector<coordinates> possible_movements;
+
+            for(int i = 0; i < 8; i++) {
+
+                coordinates tmp = c;
+
+                tmp.first  += dy[i];
+                tmp.second += dx[i];
+
+                if(is_valid_movement(tmp)) {
+                    possible_movements.push_back(tmp);
+                }
+                
+            }
+
+            std::vector<coordinates> not_visited;
+
+            for(int i = 0; i < possible_movements.size(); i++) {
+                if(pawns.count(possible_movements[i])) {
+                    solve(possible_movements[i],pawns_captured,moves + 1);
+                } else {
+                    not_visited.push_back(possible_movements[i]);
+                }
+            }
+
+            if(!not_visited.empty()) {
+                for (int i = 0 ; i < not_visited.size(); i++) {
+                    solve(not_visited[i],pawns_captured,moves + 1);
+                }
+            }
+                
+
         }
 
 
@@ -126,6 +118,7 @@ class Chessboard {
                 }
                 std::cout << std::endl;
             }
+            std::cout << std::endl;
         }
 };
 
@@ -141,7 +134,9 @@ int main() {
 
         cb.read_chessboard();
 
-        std::cout << cb.find_min_movements_for_pawns() << std::endl;
+        cb.find_min_movements_for_pawns();
+
+        std::cout << cb.solution * 2 << std::endl;
     }
 
     

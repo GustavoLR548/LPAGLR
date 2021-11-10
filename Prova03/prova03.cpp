@@ -1,6 +1,7 @@
 // Prova 3: Gustavo Lopes
 #include <iostream>
 #include <vector>
+#include <set>
 
 /*
 Complexidade: O(V^2) :Sendo V o numero de vertices no grafo.
@@ -18,15 +19,27 @@ class Graph {
 
         size_t vertices;
         matrix adj_matrix;
+        //std::set<int> all_vertices;
 
     public:
 
+        // Construtor: Iniciando todos
         Graph(size_t vertices) {
             this->vertices = vertices;
             this->adj_matrix = matrix(this->vertices, std::vector<int>(vertices, INF));
         }
 
-        void add_edge(int v1, int v2, int weight) {
+        /**
+         * @brief Adicionar uma aresta ao grafo
+         * 
+         * @param v1 vertice inicial 
+         * @param v2 vertice final
+         * @param weight peso da aresta
+         */
+        inline void add_edge(int v1, int v2, int weight) {
+
+            //all_vertices.insert(v1);
+            //all_vertices.insert(v2);
 
             if (this->adj_matrix[v2][v1] != INF) {
 
@@ -37,6 +50,14 @@ class Graph {
             }
         } 
 
+        /**
+         * @brief Algoritmo de Dijkstra para encontrar o menor caminho entre
+         * dois pontos no grafo
+         * 
+         * @param origin - vertice inicial
+         * @param destination - vertice final
+         * @return tempo em horas para ir do ponto 'origin' até 'destination'
+         */
         int find_cost_of_minimum_path(int origin, int destination) {
 
             // Vetor para guardar o peso do caminho da vertice origem
@@ -49,6 +70,8 @@ class Graph {
             visited = std::vector<bool>(this->vertices,false); 
             cost    = std::vector<int>(this->vertices,INF);    
             
+            // Como a viagem comeca da vertice 'origin',
+            // o peso desta para chegar la é 0
             cost[origin] = 0;
             
             while(true){
@@ -59,6 +82,8 @@ class Graph {
                 // Guardar o custo do vertex com menor peso
                 int min_cost = INF;
 
+                // Encontrar o peso e o índice do vetor de menor
+                // peso
                 for(int i = 0; i < this->vertices; i++){
 
                     if(visited[i] == false && min_cost > cost[i])
@@ -102,16 +127,20 @@ int main() {
         if ( vertices == 0 && edges == 0 )
             break;
 
+        // Iniciando o grafo para fazer a questão
+
         Graph g(vertices);
 
         for (int i = 0; i < edges ; i++) {
 
-            int v1,v2, weight;
-            std::cin >> v1 >> v2 >> weight;
+            int vertice_1,vertice_2, weight;
+            std::cin >> vertice_1 >> vertice_2 >> weight;
 
-            g.add_edge(--v1,--v2,weight);
+            g.add_edge(--vertice_1,--vertice_2,weight);
 
         }
+
+        // Resolvendo o problema proposto
 
         int inquiries;
         std::cin >> inquiries;
@@ -121,10 +150,10 @@ int main() {
             int origin, destination;
             std::cin >> origin >> destination;
 
-            int minimum_cost = g.find_cost_of_minimum_path(--origin,--destination);
+            int hours_to_traverse = g.find_cost_of_minimum_path(--origin,--destination);
 
-            if (minimum_cost < INF) 
-                std::cout << minimum_cost << std::endl;
+            if (hours_to_traverse < INF) 
+                std::cout << hours_to_traverse << std::endl;
             else 
                 std::cout << "Nao e possivel entregar a carta" << std::endl;
 

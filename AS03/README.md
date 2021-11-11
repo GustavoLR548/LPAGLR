@@ -1,3 +1,5 @@
+ # [Subsequências](https://www.beecrowd.com.br/judge/pt/problems/view/1507)
+
 **Dado duas sequências, diga se a segunda é uma subsequência da primeira.**
 
 # Entrada

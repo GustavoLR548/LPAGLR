@@ -1,6 +1,4 @@
-# Bactérias
-
-
+# [Bactérias](https://www.beecrowd.com.br/judge/pt/problems/view/1422)
 
 Pietro Demazio é um terrorista italiano condenado que fugiu para o Brasil, onde conseguiu um disfarce trabalhando como programador de jogos.  Em seu novo plano de destruição do planeta, Pietro desenvolveu um novo tipo de bactéria mortal, capaz de dizimar toda a população terrestre.
 

@@ -22,5 +22,5 @@ Trabalhos feitos para a discplina de Laboratório de projeto de algoritmos reali
 |---------|---------------|
 | Prova1  |  1422 - Bactérias |
 | Prova2  |  11710 - Expensive Subway  | 
-| Prova3  |  1148 - Pa | 
+| Prova3  |  1148 - Países em Guerra | 
 

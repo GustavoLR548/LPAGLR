@@ -1,4 +1,4 @@
-# Expensive subway
+# [Expensive subway](https://onlinejudge.org/external/117/11710.pdf)
 
 Peter mora em "Expensive City", uma das cidades mais caras do mundo. Peter não tem o suficiente dinheiro para comprar um carro, e 
 os ônibus na "Expensive City" são muito ruins, então ele usa o metrô para ir para trabalhar. Até agora, o metrô era muito barato:

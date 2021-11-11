@@ -1,4 +1,4 @@
-# Bolhas e Baldes
+# [Bolhas e Baldes](https://www.beecrowd.com.br/judge/pt/problems/view/1088)
 
 Andrea, Carlos e Marcelo são muito amigos e passam todos os finais de semana à beira da piscina. Enquanto Andrea se bronzeia ao sol, os dois ficam jogando Bolhas. Andrea, uma cientista da computação muito esperta, já disse a eles que não entende por que passam tanto tempo jogando um jogo tão primário.
 

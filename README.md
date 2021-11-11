@@ -3,7 +3,7 @@
 
 Trabalhos feitos para a discplina de Laboratório de projeto de algoritmos realizado para a PUC-MG
 
-|    AS    |    Beecrowd   |  
+|    AS    |    Beecrowd/UriJudge/OnlineJudge   |  
 |----------|---------------|
 |   AS01   |  1161 - Soma de Fatoriais |
 |   AS02   |  1168 - LED  | 
@@ -18,7 +18,7 @@ Trabalhos feitos para a discplina de Laboratório de projeto de algoritmos reali
 |   AS11   |  1513 - Cavalo   | 
 
 
-|  Prova  |    Beecrowd   |  
+|  Prova  |    Beecrowd/UriJudge/OnlineJudge   |  
 |---------|---------------|
 | Prova1  |  1422 - Bactérias |
 | Prova2  |  11710 - Expensive Subway  | 

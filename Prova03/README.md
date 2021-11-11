@@ -1,5 +1,4 @@
-
-# Países em Guerra
+# [Países em Guerra](https://www.beecrowd.com.br/judge/pt/problems/view/1148)
 
 No ano 2050, após diversas tentativas da **ONU** de manter a paz no mundo, explode a terceira guerra mundial. Segredos industriais, comerciais e militares obrigaram todos os países a utilizar serviços de espionagem extremamente sofisticados, de forma que em cada cidade do mundo há ao menos um espião de cada país. Esses espiões precisam se comunicar com outros espiões, com informantes e mesmo com as suas centrais durante as suas ações. Infelizmente não existe uma forma segura de um espião se comunicar em um período de guerra, então as mensagens são sempre enviadas em código para que somente o destinatário consiga ler a mensagem e entender o seu significado.
 
@@ -39,21 +38,21 @@ Exemplo de Entrada | Exemplo de Saída
 4 1 |
 3 3 |
 1 2 10 |
-2 3 1
-3 2 1
-3
-1 3
-3 1
-3 2
-0 0
-	
-
-0
-6
-6
-0
-Nao e possivel entregar a carta
-
-10
-Nao e possivel entregar a carta
-0
+2 3 1 |
+3 2 1 |
+3 |
+1 3 |
+3 1 |
+3 2 | 
+0 0 |
+x    |
+x    |
+0   |
+6   |
+6   |
+0    |
+Nao e possivel entregar a carta |
+x   |
+10 |
+Nao e possivel entregar a carta |
+0 |

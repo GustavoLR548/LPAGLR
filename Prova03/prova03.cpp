@@ -19,11 +19,10 @@ class Graph {
 
         size_t vertices;
         matrix adj_matrix;
-        //std::set<int> all_vertices;
 
     public:
 
-        // Construtor: Iniciando todos
+        // Construtor: Iniciando todos os vertices
         Graph(size_t vertices) {
             this->vertices = vertices;
             this->adj_matrix = matrix(this->vertices, std::vector<int>(vertices, INF));
@@ -37,9 +36,6 @@ class Graph {
          * @param weight peso da aresta
          */
         inline void add_edge(int v1, int v2, int weight) {
-
-            //all_vertices.insert(v1);
-            //all_vertices.insert(v2);
 
             if (this->adj_matrix[v2][v1] != INF) {
 
@@ -62,47 +58,42 @@ class Graph {
 
             // Vetor para guardar o peso do caminho da vertice origem
             // até o vértice de destino
-            std::vector<int> cost;     
+            std::vector<int> cost(this->vertices,INF);     
 
-            // Vetor para armazenar todos os vertices jah visitados
-            std::vector<bool> visited;
-
-            visited = std::vector<bool>(this->vertices,false); 
-            cost    = std::vector<int>(this->vertices,INF);    
+            // Vetor para armazenar todos os vertices já
+            std::set<int> visited_vertices; 
             
             // Como a viagem comeca da vertice 'origin',
             // o peso desta para chegar la é 0
             cost[origin] = 0;
             
-            while(true){
+            while(visited_vertices.size() != this->vertices){
 
-                // Guardar o indice do vertex com menor peso
-                int min_weight_vertex;
+                // Guardar o indice e custo do vertice com menor peso
+                int min_cost_index;
+                int min_cost_weight = INF;
 
-                // Guardar o custo do vertex com menor peso
-                int min_cost = INF;
-
-                // Encontrar o peso e o índice do vetor de menor
-                // peso
+                // Encontrar o peso e o índice do 
+                // vertice de menor peso
                 for(int i = 0; i < this->vertices; i++){
 
-                    if(visited[i] == false && min_cost > cost[i])
-                        min_weight_vertex = i,
-                        min_cost          = cost[min_weight_vertex];
+                    if(visited_vertices.count(i) == 0 && min_cost_weight > cost[i])
+                        min_cost_index  = i,
+                        min_cost_weight = cost[min_cost_index];
                     
                 }
 
                 // Se o custo minimo for infinito , quer dizer que a pesquisa
                 // acabou, ou nao tem caminho ate o vertice destino
-                if(min_cost == INF) 
+                if(min_cost_weight == INF) 
                     break;
 
-                // Marcar vertice com menor peso como visitada
-                visited[min_weight_vertex] = true;     
+                // Marcar vertice como visitada
+                visited_vertices.insert(min_cost_index);     
                 
                 for(int i = 0; i < this->vertices; i++){
 
-                    int travel_weight = cost[min_weight_vertex] + this->adj_matrix[min_weight_vertex][i];
+                    int travel_weight = cost[min_cost_index] + this->adj_matrix[min_cost_index][i];
                     
                     // Verificar se o peso da viagem pelo vertice de menor peso com o seu vizinho
                     // eh menor do que o peso da viagem atualmente registrado

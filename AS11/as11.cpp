@@ -137,7 +137,7 @@ class Chessboard {
 
     // Verificar se as coordenadas providas sao validos dentro do tabuleiro e
     // nao existe bloqueio
-    bool is_position_valid(int x,int y) {
+    inline bool is_position_valid(int x,int y) const {
       return x < 0 || x >= n || y < 0 || y >= m || grid[x][y] == BLOCK;
     }
 
